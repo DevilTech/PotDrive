@@ -8,25 +8,34 @@
 package edu.wpi.first.wpilibj.templates;
 
 
-import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.SimpleRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class RobotTemplate extends SimpleRobot {
-  CANJaguar jag;
+  Jaguar jag;
+  
   AnalogChannel an;
   Potentiometer pot;
+  Joystick joy;
+  Servo hopper;
+  
   
     public void robotInit() {
         try {
-            jag = new CANJaguar(1);
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
+            jag = new Jaguar(1);
+       } catch (Exception ex) {
+            ex.printStackTrace();        }
+        
         an = new AnalogChannel(2);
         pot = new Potentiometer(an, 2.0);
+        LiveWindow.addActuator("pot", "numbers!", an);
+        LiveWindow.setEnabled(true);
+        hopper = new Servo(4);
+        joy= new Joystick(1);
+        
         
     }
   
@@ -36,14 +45,21 @@ public class RobotTemplate extends SimpleRobot {
 
     public void operatorControl() {
         while(isEnabled()) {
-            shoot(pot.potValueBeginning());
+            shoot(SmartDashboard.getNumber("Slider 1")/100);
+            System.out.println(SmartDashboard.getNumber("Slider 1")/100);
+            LiveWindow.run();
+            if(joy.getRawButton(1)){
+                hopper.setAngle(90);
+                Timer.delay(.3);
+                hopper.setAngle(10);
+            }
         }
     }
      public void shoot(double in)
     {
         try {
-            jag.setX(in);
-        } catch (CANTimeoutException ex) {
+            jag.set(in);
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -51,8 +67,8 @@ public class RobotTemplate extends SimpleRobot {
     public void stop()
     {
         try {
-            jag.setX(0);
-        } catch (CANTimeoutException ex) {
+            jag.set(0);
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

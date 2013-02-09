@@ -24,17 +24,21 @@ public class RobotTemplate extends SimpleRobot {
   
   
     public void robotInit() {
-        try {
-            jag = new Jaguar(1);
-       } catch (Exception ex) {
-            ex.printStackTrace();        }
+//        try {
+//            jag = new Jaguar(1);
+//       } catch (Exception ex) {
+//            ex.printStackTrace();        }
         
-        an = new AnalogChannel(2);
-        pot = new Potentiometer(an, 2.0);
-        LiveWindow.addActuator("pot", "numbers!", an);
-        LiveWindow.setEnabled(true);
-        hopper = new Servo(4);
+       // an = new AnalogChannel(2);
+       // pot = new Potentiometer(an, 2.0);
+//        LiveWindow.addActuator("pot", "numbers!", an);
+//        LiveWindow.setEnabled(false);
+        hopper = new Servo(1);
         joy= new Joystick(1);
+        SmartDashboard.putNumber("Lower Servo Angle", 0.0);
+        SmartDashboard.putNumber("Higher Servo Angle", 90.0);
+        SmartDashboard.putNumber("Motor Speed", 0.0);
+        
         
         
     }
@@ -45,13 +49,13 @@ public class RobotTemplate extends SimpleRobot {
 
     public void operatorControl() {
         while(isEnabled()) {
-            shoot(SmartDashboard.getNumber("Slider 1")/100);
-            System.out.println(SmartDashboard.getNumber("Slider 1")/100);
+           // shoot(SmartDashboard.getNumber("Motor Speed"));
+           // System.out.println(SmartDashboard.getNumber("Motor Speed"));
             LiveWindow.run();
             if(joy.getRawButton(1)){
-                hopper.setAngle(90);
+                hopper.setAngle(60.0);//60.0
                 Timer.delay(.3);
-                hopper.setAngle(10);
+                hopper.setAngle(0.0);//0.0
             }
         }
     }
